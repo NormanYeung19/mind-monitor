@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from 'react';
-import { supabase } from '../../lib/supabase'; // Corrected import path
+import { supabase } from '../../lib/supabase';
 
 export default function MoodLogForm() {
   const [mood, setMood] = useState(5);
@@ -9,11 +9,18 @@ export default function MoodLogForm() {
 
   const handleSubmit = async () => {
     const user = supabase.auth.user();
-    const { data, error } = await supabase
-      .from('MoodLogs')
-      .insert([{ mood_score: mood, note, user_id: user.id }]);
-    if (error) console.error('Error logging mood:', error.message);
-    else console.log('Mood logged:', data);
+    if (user) {
+      const { data, error } = await supabase
+        .from('MoodLogs')
+        .insert([{ mood_score: mood, note, user_id: user.id }]);
+      if (error) {
+        console.error('Error logging mood:', error.message);
+      } else {
+        console.log('Mood logged:', data);
+      }
+    } else {
+      console.error('No user logged in');
+    }
   };
 
   return (

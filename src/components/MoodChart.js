@@ -11,12 +11,19 @@ export default function MoodChart() {
   useEffect(() => {
     const fetchMoodData = async () => {
       const user = supabase.auth.user();
-      const { data, error } = await supabase
-        .from('MoodLogs')
-        .select('mood_score, timestamp')
-        .eq('user_id', user.id);
-      if (error) console.error('Error fetching mood data:', error.message);
-      else setMoodData(data);
+      if (user) {
+        const { data, error } = await supabase
+          .from('MoodLogs')
+          .select('mood_score, timestamp')
+          .eq('user_id', user.id);
+        if (error) {
+          console.error('Error fetching mood data:', error.message);
+        } else {
+          setMoodData(data);
+        }
+      } else {
+        console.error('No user logged in');
+      }
     };
 
     fetchMoodData();
