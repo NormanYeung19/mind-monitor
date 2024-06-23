@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
 import { Line } from 'react-chartjs-2';
@@ -10,19 +9,14 @@ export default function MoodChart() {
 
   useEffect(() => {
     const fetchMoodData = async () => {
-      const user = supabase.auth.user();
-      if (user) {
-        const { data, error } = await supabase
-          .from('MoodLogs')
-          .select('mood_score, timestamp')
-          .eq('user_id', user.id);
-        if (error) {
-          console.error('Error fetching mood data:', error.message);
-        } else {
-          setMoodData(data);
-        }
+      const { data, error } = await supabase
+        .from('MoodLogs')
+        .select('mood_score, timestamp');
+
+      if (error) {
+        console.error('Error fetching mood data:', error.message);
       } else {
-        console.error('No user logged in');
+        setMoodData(data);
       }
     };
 
